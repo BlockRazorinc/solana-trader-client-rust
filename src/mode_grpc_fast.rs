@@ -11,8 +11,10 @@ use solana_sdk::transaction::Transaction;
 use solana_system_interface::instruction::transfer;
 use std::error::Error;
 use std::str::FromStr;
+use std::time::Duration;
 use tonic::metadata::AsciiMetadataValue;
 use tonic::transport::Channel;
+use tokio::time::interval;
 
 pub mod server {
     tonic::include_proto!("serverpb");
@@ -67,12 +69,32 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let apikeyvalue = AsciiMetadataValue::try_from(authkey)
         .map_err(|e| Box::<dyn Error>::from(format!("Invalid API key format: {}", e)))?;
 
-    let mut client = ServerClient::new(channel);
-
+    let mut client = ServerClient::new(channel.clone());
     let mut request = tonic::Request::new(HealthRequest {});
     request.metadata_mut().insert("apikey", apikeyvalue.clone());
     let response = client.get_health(request).await?;
-    println!("get health response={:?}", response.into_inner().status);
+    println!("health check response: {:?}", response.into_inner().status);
+
+    // Start a background goroutine to periodically send /health requests
+	// For low-frequency users, this keeps the grpc connection alive (warm)
+    let mut health_client = ServerClient::new(channel); 
+    let health_apikey = apikeyvalue.clone();
+    tokio::spawn(async move {
+        let mut interval = interval(Duration::from_secs(30));
+        loop {
+            interval.tick().await;
+            let mut request = tonic::Request::new(HealthRequest {});
+            request.metadata_mut().insert("apikey", health_apikey.clone());
+            match health_client.get_health(request).await {
+                Ok(response) => {
+                    println!("[Health Check] Response: {:?}", response.into_inner().status);
+                }
+                Err(e) => {
+                    eprintln!("[Health Check] Failed: {}", e);
+                }
+            }
+        }
+    });
 
     let from = Keypair::from_base58_string(privatekey);
     let frompubkey = Signer::pubkey(&from);

@@ -15,6 +15,18 @@ path = "src/mode_http_fast.rs"
 [[bin]] # Bin to run the HelloWorld http client
 name = "mode-http-sandwichMitigation"
 path = "src/mode_http_sandwichMitigation.rs"
+[[bin]]
+name = "mode-grpc-fast-binary"
+path = "src/mode_grpc_fast_binary.rs"
+[[bin]]
+name = "mode-grpc-sandwichMitigation-binary"
+path = "src/mode_grpc_sandwichMitigation_binary.rs"
+[[bin]]
+name = "mode-http-fast-binary"
+path = "src/mode_http_fast_binary.rs"
+[[bin]]
+name = "mode-http-sandwichMitigation-binary"
+path = "src/mode_http_sandwichMitigation_binary.rs"
 
 [dependencies]
 tonic = "0.13"

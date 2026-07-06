@@ -121,9 +121,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             binary_transaction: serialized,
             mode: mode.to_string(),
             safe_window: safe_window.unwrap_or_default(),
-            revert_protection: revert_protection,
-            skip_preflight: false,
-            preflight_commitment: String::new(),
+            revert_protection: revert_protection
         });
     tx_request
         .metadata_mut()

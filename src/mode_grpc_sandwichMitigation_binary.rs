@@ -121,10 +121,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         tonic::Request::new(SendBinaryRequest {
             binary_transaction: serialized,
             mode: mode.to_string(),
-            safe_window: safe_window.unwrap_or_default(),
+            safe_window: safe_window,
             revert_protection: revert_protection,
-            skip_preflight: false,
-            preflight_commitment: String::new(),
         });
     tx_request
         .metadata_mut()

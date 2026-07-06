@@ -27,6 +27,12 @@ path = "src/mode_http_fast_binary.rs"
 [[bin]]
 name = "mode-http-sandwichMitigation-binary"
 path = "src/mode_http_sandwichMitigation_binary.rs"
+[[bin]]
+name = "send-bundle-grpc"
+path = "src/send_bundle_grpc.rs"
+[[bin]]
+name = "send-bundle-http"
+path = "src/send_bundle_http.rs"
 
 [dependencies]
 tonic = "0.13"

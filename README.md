@@ -29,6 +29,8 @@ cargo build --locked
 
 # gRPC
 
+## Send Transaction
+
 | Mode | Encoding | Example |
 |---|---|---|
 | fast | Base64 | `cargo run --bin mode-grpc-fast` |
@@ -36,7 +38,15 @@ cargo build --locked
 | sandwichMitigation | Base64 | `cargo run --bin mode-grpc-sandwichMitigation` |
 | sandwichMitigation | Binary | `cargo run --bin mode-grpc-sandwichMitigation-binary` |
 
+## Send Bundle
+
+| Encoding | Example |
+|---|---|
+| Base64 | `cargo run --bin send-bundle-grpc` |
+
 # HTTP
+
+## Send Transaction
 
 | Mode | Encoding | Example |
 |---|---|---|
@@ -44,3 +54,9 @@ cargo build --locked
 | fast | Binary | `cargo run --bin mode-http-fast-binary` |
 | sandwichMitigation | Base64 | `cargo run --bin mode-http-sandwichMitigation` |
 | sandwichMitigation | Binary | `cargo run --bin mode-http-sandwichMitigation-binary` |
+
+## Send Bundle
+
+| Encoding | Example |
+|---|---|
+| Base64 | `cargo run --bin send-bundle-http` |

@@ -44,6 +44,12 @@ cargo build --locked
 |---|---|
 | Base64 | `cargo run --bin send-bundle-grpc` |
 
+## Send Batch
+
+| Encoding | Example |
+|---|---|
+| Base64 | `cargo run --bin send-batch-grpc` |
+
 # HTTP
 
 ## Send Transaction
@@ -60,3 +66,15 @@ cargo build --locked
 | Encoding | Example |
 |---|---|
 | Base64 | `cargo run --bin send-bundle-http` |
+
+## Send Batch
+
+| Encoding | Example |
+|---|---|
+| Base64 | `cargo run --bin send-batch-http` |
+
+## Send Batch with Binary
+
+| Encoding | Example |
+|---|---|
+| Binary | `cargo run --bin send-batch-http-binary` |

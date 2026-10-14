@@ -33,7 +33,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // send mode
     let mode = "sandwichMitigation";
     // safe window
-    let safe_window = Some(5);
+    let safe_window = 5;
     // revert protection
     let revert_protection = false;
 
@@ -41,10 +41,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let tipamount = 1_000_000;
 
     let tip_accounts = [
-        "Gywj98ophM7GmkDdaWs4isqZnDdFCW7B46TXmKfvyqSm",
-        "FjmZZrFvhnqqb9ThCuMVnENaM3JGVuGWNyCAxRJcFpg9",
-        "6No2i3aawzHsjtThw81iq1EXPJN6rh8eSJCLaYZfKDTG",
-        "A9cWowVAiHe9pJfKAj3TJiN9VpbzMUq6E4kEvf5mUT22",
         "68Pwb4jS7eZATjDfhmTXgRJjCiZmw1L7Huy4HNpnxJ3o",
         "4ABhJh5rZPjv63RBJBuyWzBK3g9gWMUQdTZP2kiW31V9",
         "B2M4NG5eyZp5SBQrSdtemzk5TqVuaWGQnowGaCBt8GyM",
@@ -55,6 +51,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "BnGKHAC386n4Qmv9xtpBVbRaUTKixjBe3oagkPFKtoy6",
         "Dd7K2Fp7AtoN8xCghKDRmyqr5U169t48Tw5fEd3wT9mq",
         "AP6qExwrbRgBAVaehg4b5xHENX815sMabtBzUzVB4v8S",
+        "8EpzWhsr7uyZkfVD7MTHoWqupM14xngzMeUcCkWbY1UG",
+        "56XRik27PddNnR7JkHKqd5pWdMHeqje7TCm1gsdmvnTP",
+        "2DJNtR1tT7vfub7sDJ6v9NGmrzGVFUer5FvjhEcWEpvv",
+        "3AveZTS3PJo5qKEqHJci5bjW8neufriirr9mJXfsv4iH",
+        "9DC798ezxU2f2i8ggQ4vsqrsNxdDWJWAFg4cT1xLDR1X",
     ];
 
     let mut rng = rand::thread_rng();

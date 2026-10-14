@@ -14,19 +14,21 @@ service Server {
     rpc SendBundle(SendBundleRequest) returns(SendBundleResponse) {};
 
     rpc GetHealth(HealthRequest) returns(HealthResponse) {};
+
+    rpc GetTipAccounts(GetTipAccountsRequest) returns(GetTipAccountsResponse) {};
 }
 
 message SendRequest {
     string transaction = 1;
     string mode = 2;
-    optional int32 safeWindow = 3;
+    int32 safeWindow = 3;
     bool revertProtection = 4;
 }
 
 message SendBinaryRequest {
     bytes binaryTransaction = 1;
     string mode = 2;
-    optional int32 safeWindow = 3;
+    int32 safeWindow = 3;
     bool revertProtection = 4;
 }
 
@@ -45,7 +47,7 @@ message SendBundleResponse {
 message SendBatchRequest {
     repeated string transactions = 1;
     string mode = 2;
-    optional int32 safeWindow = 3;
+    int32 safeWindow = 3;
     bool revertProtection = 4;
 }
 
@@ -63,4 +65,11 @@ message HealthRequest {
 
 message HealthResponse {
     string status = 1;
+}
+
+message GetTipAccountsRequest {
+}
+
+message GetTipAccountsResponse {
+    repeated string tipAccounts = 1;
 }

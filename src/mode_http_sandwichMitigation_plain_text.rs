@@ -1,6 +1,5 @@
 use base64::{engine::general_purpose, Engine as _};
 use reqwest::header::CONTENT_TYPE;
-use serde::Deserialize;
 use solana_client::rpc_client::RpcClient;
 use solana_sdk::{
     commitment_config::CommitmentConfig,
@@ -13,11 +12,6 @@ use solana_trader_client_rust::get_http_tip_account;
 use std::str::FromStr;
 use std::time::Duration;
 use tokio::time::sleep;
-
-#[derive(Debug, Deserialize)]
-struct SendResponse {
-    signature: String,
-}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -110,10 +104,21 @@ async fn send_transaction(
         .header(CONTENT_TYPE, "text/plain")
         .body(encoded)
         .send()
-        .await?
-        .error_for_status()?
-        .json::<SendResponse>()
         .await?;
-    println!("Transaction Signature: {}", response.signature);
+    let status = response.status();
+    let text = response.text().await?;
+    if !status.is_success() {
+        return Err(format!(
+            "send transaction failed: status={} body={}",
+            status,
+            text.trim()
+        )
+        .into());
+    }
+    let signature = text.trim();
+    if signature.is_empty() {
+        return Err("send transaction returned an empty signature".into());
+    }
+    println!("Transaction Signature: {}", signature);
     Ok(())
 }

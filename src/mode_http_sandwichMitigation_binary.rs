@@ -15,11 +15,6 @@ use std::time::Duration;
 use tokio::time::sleep;
 
 #[derive(Deserialize, Debug)]
-struct SendResponse {
-    signature: String,
-}
-
-#[derive(Deserialize, Debug)]
 struct HealthResponse {
     result: String,
 }
@@ -165,14 +160,21 @@ async fn send_transaction(
         .send()
         .await?;
 
+    let status = res.status();
     let text = res.text().await?;
-    let parsed: Result<SendResponse, _> = serde_json::from_str(&text);
-    match parsed {
-        Ok(r) => {
-            println!("Transaction Signature: {}", r.signature); // use field
-        }
-        Err(_) => println!("RAW RESPONSE: {}", text),
+    if !status.is_success() {
+        return Err(format!(
+            "send transaction failed: status={} body={}",
+            status,
+            text.trim()
+        )
+        .into());
     }
+    let signature = text.trim();
+    if signature.is_empty() {
+        return Err("send transaction returned an empty signature".into());
+    }
+    println!("Transaction Signature: {}", signature);
 
     Ok(())
 }

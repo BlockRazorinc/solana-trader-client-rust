@@ -16,11 +16,11 @@ path = "src/mode_http_fast.rs"
 name = "mode-http-sandwichMitigation"
 path = "src/mode_http_sandwichMitigation.rs"
 [[bin]]
-name = "mode-grpc-fast-binary"
-path = "src/mode_grpc_fast_binary.rs"
+name = "mode-http-fast-plain-text"
+path = "src/mode_http_fast_plain_text.rs"
 [[bin]]
-name = "mode-grpc-sandwichMitigation-binary"
-path = "src/mode_grpc_sandwichMitigation_binary.rs"
+name = "mode-http-sandwichMitigation-plain-text"
+path = "src/mode_http_sandwichMitigation_plain_text.rs"
 [[bin]]
 name = "mode-http-fast-binary"
 path = "src/mode_http_fast_binary.rs"

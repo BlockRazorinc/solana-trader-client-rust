@@ -1,6 +1,5 @@
 use base64::{engine::general_purpose, Engine as _};
 use bincode;
-use rand::Rng;
 use reqwest::header::{HeaderMap, HeaderValue, CONTENT_TYPE};
 use serde::{Deserialize, Serialize};
 use solana_client::rpc_client::RpcClient;
@@ -11,6 +10,7 @@ use solana_sdk::{
     transaction::Transaction,
 };
 use solana_system_interface::instruction::transfer;
+use solana_trader_client_rust::get_http_tip_account;
 use std::str::FromStr;
 use std::time::Duration;
 use tokio::time::sleep;
@@ -34,39 +34,24 @@ struct HealthResponse {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Configuration values
+    // Example endpoints only. Always use the current endpoints published on the BlockRazor website.
     let http_endpoint = "http://frankfurt.solana.blockrazor.xyz:443/sendTransaction";
     let health_endpoint = "http://frankfurt.solana.blockrazor.xyz:443/health";
+    let tip_accounts_endpoint = "http://frankfurt.solana.blockrazor.xyz:443/getTipAccounts";
     let mainnetrpc = "";
     // replace your authKey
     let authkey = "";
     // relace your private key
-    let privatekey ="";
+    let privatekey = "";
     // relace your target public key
     let publickey = "";
     // transaction amount
     let amount: u64 = 200_000;
     // tip amount
-    let tipamount: u64 = 1_000_000;
+    let tipamount: u64 = 100_000;
     // send mode
     let mode = "fast";
 
-    let tip_accounts = [
-        "68Pwb4jS7eZATjDfhmTXgRJjCiZmw1L7Huy4HNpnxJ3o",
-        "4ABhJh5rZPjv63RBJBuyWzBK3g9gWMUQdTZP2kiW31V9",
-        "B2M4NG5eyZp5SBQrSdtemzk5TqVuaWGQnowGaCBt8GyM",
-        "5jA59cXMKQqZAVdtopv8q3yyw9SYfiE3vUCbt7p8MfVf",
-        "5YktoWygr1Bp9wiS1xtMtUki1PeYuuzuCF98tqwYxf61",
-        "295Avbam4qGShBYK7E9H5Ldew4B3WyJGmgmXfiWdeeyV",
-        "EDi4rSy2LZgKJX74mbLTFk4mxoTgT6F7HxxzG2HBAFyK",
-        "BnGKHAC386n4Qmv9xtpBVbRaUTKixjBe3oagkPFKtoy6",
-        "Dd7K2Fp7AtoN8xCghKDRmyqr5U169t48Tw5fEd3wT9mq",
-        "AP6qExwrbRgBAVaehg4b5xHENX815sMabtBzUzVB4v8S",
-        "8EpzWhsr7uyZkfVD7MTHoWqupM14xngzMeUcCkWbY1UG",
-        "56XRik27PddNnR7JkHKqd5pWdMHeqje7TCm1gsdmvnTP",
-        "2DJNtR1tT7vfub7sDJ6v9NGmrzGVFUer5FvjhEcWEpvv",
-        "3AveZTS3PJo5qKEqHJci5bjW8neufriirr9mJXfsv4iH",
-        "9DC798ezxU2f2i8ggQ4vsqrsNxdDWJWAFg4cT1xLDR1X",
-    ];
     // Create a shared HTTP client with keep-alive support
     let client = reqwest::Client::new();
 
@@ -94,18 +79,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         authkey,
         privatekey,
         publickey,
-        &tip_accounts,
         tipamount,
         amount,
         mode,
-        http_endpoint,
+        &http_endpoint,
+        tip_accounts_endpoint,
     )
     .await?;
 
     Ok(())
 }
 
-/// Perform GET /health to keep HTTP connection alive
+/// Perform POST /health to keep the HTTP connection alive.
 async fn ping_health(
     client: &reqwest::Client,
     health_endpoint: &str,
@@ -115,7 +100,12 @@ async fn ping_health(
     headers.insert("apikey", HeaderValue::from_str(authkey)?);
     headers.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
 
-    let res = client.get(health_endpoint).headers(headers).send().await?;
+    let res = client
+        .post(health_endpoint)
+        .headers(headers)
+        .json(&serde_json::json!({}))
+        .send()
+        .await?;
 
     let body = res.text().await?;
     let parsed: Result<HealthResponse, _> = serde_json::from_str(&body);
@@ -134,15 +124,15 @@ async fn send_transaction(
     authkey: &str,
     privatekey: &str,
     publickey: &str,
-    tip_accounts: &[&str],
     tipamount: u64,
     amount: u64,
     mode: &str,
     http_endpoint: &str,
+    tip_accounts_endpoint: &str,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let from = Keypair::from_base58_string(privatekey);
     let receiver = Pubkey::from_str(publickey)?;
-    let tip = Pubkey::from_str(tip_accounts[rand::thread_rng().gen_range(0..tip_accounts.len())])?;
+    let tip = get_http_tip_account(client, tip_accounts_endpoint).await?;
 
     let rpcurl = String::from(mainnetrpc);
     let connection = RpcClient::new_with_commitment(rpcurl, CommitmentConfig::confirmed());

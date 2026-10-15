@@ -7,8 +7,6 @@ option go_package = "./pb/serverpb";
 service Server {
     rpc SendTransaction(SendRequest) returns(SendResponse) {};
 
-    rpc SendBinaryTransaction(SendBinaryRequest) returns(SendResponse) {};
-
     rpc SendBatch(SendBatchRequest) returns(SendBatchResponse) {};
 
     rpc SendBundle(SendBundleRequest) returns(SendBundleResponse) {};
@@ -20,13 +18,6 @@ service Server {
 
 message SendRequest {
     string transaction = 1;
-    string mode = 2;
-    int32 safeWindow = 3;
-    bool revertProtection = 4;
-}
-
-message SendBinaryRequest {
-    bytes binaryTransaction = 1;
     string mode = 2;
     int32 safeWindow = 3;
     bool revertProtection = 4;
